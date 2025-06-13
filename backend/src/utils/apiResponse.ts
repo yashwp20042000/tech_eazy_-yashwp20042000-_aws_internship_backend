@@ -1,22 +1,21 @@
 
-import { Response } from 'express';
-import ApiError from './apiError';
+import { ApiResponse, PaginatedResponse } from '../types';
 
-export class ApiResponse {
-  constructor(
-    public success: boolean,
-    public data: any,
-    public message?: string
-  ) {}
+export const successResponse = <T>(data: T): ApiResponse<T> => ({
+  success: true,
+  data
+});
 
-  static send(res: Response, data: any, message?: string) {
-    res.json(new ApiResponse(true, data, message));
-  }
+export const errorResponse = (message: string, code: string, details?: any): ApiResponse => ({
+  success: false,
+  error: { message, code, details }
+});
 
-  static error(res: Response, error: Error | ApiError) {
-    const statusCode = error instanceof ApiError ? error.statusCode : 500;
-    const message = error.message || 'Internal Server Error';
-    
-    res.status(statusCode).json(new ApiResponse(false, null, message));
-  }
-}
+export const paginatedResponse = <T>(
+  data: T[],
+  meta: PaginatedResponse<T>['meta']
+): PaginatedResponse<T> => ({
+  success: true,
+  data,
+  meta
+});

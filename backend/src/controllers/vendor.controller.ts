@@ -32,3 +32,23 @@ export const getVendorById = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const updateVendor = async (id: string, payload: any) => {
+  const vendor = await Vendor.findByIdAndUpdate(
+    id,
+    payload,
+    { new: true, runValidators: true }
+  );
+  if (!vendor) {
+    throw new ApiError(404, 'Vendor not found');
+  }
+  return vendor;
+};
+
+export const deleteVendor = async (id: string) => {
+  const vendor = await Vendor.findByIdAndDelete(id);
+  if (!vendor) {
+    throw new ApiError(404, 'Vendor not found');
+  }
+  return vendor;
+};
